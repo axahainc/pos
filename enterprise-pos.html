@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enterprise POS Pro - Next Generation Point of Sale</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#1E40AF',
+                        secondary: '#64748B',
+                        accent: '#10B981',
+                        danger: '#EF4444',
+                        warning: '#F59E0B'
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-bg {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+        .sidebar-transition {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .fade-in {
+            animation: fadeIn 0.5s ease-in;
+        }
+        .slide-up {
+            animation: slideUp 0.4s ease-out;
+        }
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        @keyframes slideUp {
+            from { transform: translateY(100%); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        .notification {
+            animation: slideInRight 0.3s ease-out;
+        }
+        @keyframes slideInRight {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        .glass-effect {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+        .card-hover {
+            transition: all 0.3s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04);
+        }
+    </style>
+</head>
+<body class="bg-gray-50 font-sans">
+    <!-- Login Screen -->
+    <div id="loginScreen" class="min-h-screen gradient-bg flex items-center justify-center p-4">
+        <div class="glass-effect p-8 rounded-3xl shadow-2xl w-full max-w-md text-white">
+            <div class="text-center mb-8">
+                <div class="w-20 h-20 bg-white bg-opacity-20 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-store text-3xl"></i>
+                </div>
+                <h1 class="text-4xl font-bold mb-2">Enterprise POS Pro</h1>
+                <p class="text-lg opacity-90">Next Generation Point of Sale System</p>
+                <p class="text-sm opacity-75 mt-2">Powered by AI & Cloud Technology</p>
+            </div>
+            
+            <form id="loginForm" class="space-y-6">
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium opacity-90">Username</label>
+                    <div class="relative">
+                        <i class="fas fa-user absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="loginUsername" class="w-full pl-10 pr-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:ring-2 focus:ring-white focus:border-transparent transition-all" placeholder="Enter username" required>
+                    </div>
+                </div>
+                <div class="space-y-2">
+                    <label class="block text-sm font-medium opacity-90">Password</label>
+                    <div class="relative">
+                        <i class="fas fa-lock absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="password" id="loginPassword" class="w-full pl-10 pr-4 py-3 bg-white bg-opacity-20 border border-white border-opacity-30 rounded-xl text-white placeholder-white placeholder-opacity-70 focus:ring-2 focus:ring-white focus:border-transparent transition-all" placeholder="Enter password" required>
+                    </div>
+                </div>
+                <button type="submit" class="w-full bg-white text-gray-800 py-3 rounded-xl hover:bg-gray-100 transition-all font-semibold text-lg shadow-lg">
+                    <i class="fas fa-sign-in-alt mr-2"></i>Sign In
+                </button>
+            </form>
+            
+            <div class="mt-8 p-4 bg-white bg-opacity-10 rounded-xl">
+                <p class="text-center text-sm opacity-90 mb-3">Demo Accounts</p>
+                <div class="space-y-2 text-xs">
+                    <div class="flex justify-between">
+                        <span class="opacity-75">Admin:</span>
+                        <span class="font-mono">admin / admin123</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-75">Manager:</span>
+                        <span class="font-mono">manager / manager123</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="opacity-75">Cashier:</span>
+                        <span class="font-mono">cashier / cashier123</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Application -->
+    <div id="mainApp" class="hidden">
+        <!-- Top Navigation -->
+        <nav class="bg-white shadow-lg border-b border-gray-200 sticky top-0 z-30">
+            <div class="px-6 py-4 flex items-center justify-between">
+                <div class="flex items-center space-x-4">
+                    <button id="sidebarToggle" class="text-gray-600 hover:text-gray-800 p-2 rounded-lg hover:bg-gray-100 transition-colors">
+                        <i class="fas fa-bars text-xl"></i>
+                    </button>
+                    <div class="flex items-center space-x-3">
+                        <div class="w-10 h-10 bg-primary rounded-lg flex items-center justify-center">
+                            <i class="fas fa-store text-white text-xl"></i>
+                        </div>
+                        <div>
+                            <h1 class="text-2xl font-bold text-gray-800">Enterprise POS Pro</h1>
+                            <p class="text-sm text-gray-600">Welcome back, <span id="currentUser" class="font-semibold"></span></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="flex items-center space-x-4">
+                    <div class="flex items-center space-x-2">
+                        <i class="fas fa-building text-gray-500"></i>
+                        <select id="branchSelector" class="px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                            <option value="main">Main Branch</option>
+                            <option value="downtown">Downtown Branch</option>
+                            <option value="mall">Mall Branch</option>
+                        </select>
+                    </div>
+                    
+                    <div class="flex items-center space-x-3">
+                        <div class="relative">
+                            <button class="p-2 text-gray-600 hover:text-gray-800 rounded-lg hover:bg-gray-100 transition-colors">
+                                <i class="fas fa-bell text-xl"></i>
+                                <span class="absolute -top-1 -right-1 bg-red-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center">3</span>
+                            </button>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <div class="w-8 h-8 bg-primary rounded-full flex items-center justify-center">
+                                <i class="fas fa-user text-white"></i>
+                            </div>
+                            <button id="logoutBtn" class="text-red-600 hover:text-red-800 text-sm font-medium hover:bg-red-50 px-3 py-1 rounded-lg transition-colors">
+                                <i class="fas fa-sign-out-alt mr-1"></i>Logout
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </nav>
+
+        <!-- Sidebar -->
+        <aside id="sidebar" class="fixed left-0 top-20 h-full bg-gray-900 text-white w-64 sidebar-transition z-20 shadow-xl">
+            <nav class="mt-6">
+                <div class="space-y-2 px-4">
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="dashboard">
+                        <i class="fas fa-tachometer-alt w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Dashboard</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="pos">
+                        <i class="fas fa-cash-register w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Point of Sale</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="inventory">
+                        <i class="fas fa-boxes w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Inventory</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="customers">
+                        <i class="fas fa-users w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Customers</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="branches">
+                        <i class="fas fa-building w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Branches</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="staff">
+                        <i class="fas fa-user-tie w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Staff Management</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="reports">
+                        <i class="fas fa-chart-line w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Reports & Analytics</span>
+                    </button>
+                    <button class="nav-item w-full flex items-center px-4 py-3 text-left hover:bg-gray-800 rounded-xl transition-all duration-200 group" data-section="settings">
+                        <i class="fas fa-cog w-5 h-5 mr-3 group-hover:text-accent"></i>
+                        <span class="group-hover:text-accent">Settings</span>
+                    </button>
+                </div>
+            </nav>
+        </aside>
+
+        <!-- Main Content -->
+        <main id="mainContent" class="ml-64 p-6 transition-all duration-300">
+            <!-- Dashboard Section -->
+            <section id="dashboardSection" class="section fade-in">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Dashboard Overview</h1>
+                    <p class="text-gray-600">Real-time insights and performance metrics</p>
+                </div>
+
+                <!-- Key Metrics Cards -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Today's Sales</p>
+                                <p class="text-3xl font-bold text-green-600">$12,450</p>
+                                <p class="text-sm text-green-500">+18% from yesterday</p>
+                            </div>
+                            <div class="w-12 h-12 bg-green-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-dollar-sign text-green-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Transactions</p>
+                                <p class="text-3xl font-bold text-blue-600">247</p>
+                                <p class="text-sm text-blue-500">+12% from yesterday</p>
+                            </div>
+                            <div class="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-receipt text-blue-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Customers</p>
+                                <p class="text-3xl font-bold text-purple-600">89</p>
+                                <p class="text-sm text-purple-500">+8% from yesterday</p>
+                            </div>
+                            <div class="w-12 h-12 bg-purple-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-users text-purple-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="bg-white rounded-2xl shadow-lg p-6 card-hover">
+                        <div class="flex items-center justify-between">
+                            <div>
+                                <p class="text-sm font-medium text-gray-600">Low Stock Items</p>
+                                <p class="text-3xl font-bold text-orange-600">23</p>
+                                <p class="text-sm text-orange-500">Requires attention</p>
+                            </div>
+                            <div class="w-12 h-12 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-orange-600 text-xl"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Charts Row -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">Sales Trend (Last 7 Days)</h3>
+                        <canvas id="salesChart" width="400" height="200"></canvas>
+                    </div>
+                    <div class="bg-white rounded-2xl shadow-lg p-6">
+                        <h3 class="text-lg font-semibold mb-4">Top Products</h3>
+                        <div class="space-y-4">
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-blue-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-headphones text-blue-600"></i>
+                                    </div>
+                                    <span class="font-medium">Wireless Headphones</span>
+                                </div>
+                                <span class="text-sm text-gray-600">245 sold</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-green-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-laptop text-green-600"></i>
+                                    </div>
+                                    <span class="font-medium">Laptop Stand</span>
+                                </div>
+                                <span class="text-sm text-gray-600">167 sold</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+                                <div class="flex items-center space-x-3">
+                                    <div class="w-10 h-10 bg-purple-100 rounded-lg flex items-center justify-center">
+                                        <i class="fas fa-cable text-purple-600"></i>
+                                    </div>
+                                    <span class="font-medium">USB Cable</span>
+                                </div>
+                                <span class="text-sm text-gray-600">134 sold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Activity -->
+                <div class="bg-white rounded-2xl shadow-lg p-6">
+                    <h3 class="text-lg font-semibold mb-4">Recent Activity</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-check text-green-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">Sale completed - $125.50</p>
+                                <p class="text-xs text-gray-500">2 minutes ago by Mike Cashier</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-box text-blue-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">New product added - Gaming Mouse</p>
+                                <p class="text-xs text-gray-500">15 minutes ago by Sarah Manager</p>
+                            </div>
+                        </div>
+                        <div class="flex items-center space-x-3 p-3 hover:bg-gray-50 rounded-lg transition-colors">
+                            <div class="w-8 h-8 bg-orange-100 rounded-full flex items-center justify-center">
+                                <i class="fas fa-exclamation-triangle text-orange-600 text-sm"></i>
+                            </div>
+                            <div class="flex-1">
+                                <p class="text-sm font-medium">Low stock alert - Keyboard</p>
+                                <p class="text-xs text-gray-500">1 hour ago by System</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- POS Section -->
+            <section id="posSection" class="section hidden">
+                <div class="mb-8">
+                    <h1 class="text-3xl font-bold text-gray-800 mb-2">Point of Sale</h1>
+                    <p class="text-gray-600">Process sales and manage transactions</p>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                    <!-- Product Selection -->
+                    <div class="lg:col-span-2">
+                        <div class="bg-white rounded-2xl shadow-lg p-6">
+                            <div class="flex items-center justify-between mb-6">
+                                <h3 class="text-xl font-semibold">Product Selection</h3>
+                                <div class="flex space-x-2">
+                                    <div class="relative">
+                                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" id="searchProducts" placeholder="Search products..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                    <div class="relative">
+                                        <i class="fas fa-barcode absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                                        <input type="text" id="barcodeInput" placeholder="Scan barcode..." class="pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                    </div>
+                                </div>
+                            </div>
+                            
+                            <div class="mb-4">
+                                <div class="flex space-x-2 mb-4">
+                                    <button class="category-filter px-4 py-2 rounded-lg bg-primary text-white text-sm font-medium">All</button>
+                                    <button class="category-filter px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300">Electronics</button>
+                                    <button class="category-filter px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300">Accessories</button>
+                                    <button class="category-filter px-4 py-2 rounded-lg bg-gray-200 text-gray-700 text-sm font-medium hover:bg-gray-300">Clothing</button>
+                                </div>
+                            </div>
+                            
+                            <div id="productGrid" class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+                                <!-- Products will be loaded here -->
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Cart & Payment -->
+                    <div>
+                        <div class="bg-white rounded-2xl shadow-lg p-6 sticky top-24">
+                            <h3 class="text-xl font-semibold mb-4">Shopping Cart</h3>
+                            <div id="cartItems" class="space-y-3 mb-6 max-h-64 overflow-y-auto">
+                                <!-- Cart items will be added here -->
+                            </div>
+                            
+                            <div class="border-t pt-4 space-y-3">
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Subtotal:</span>
+                                    <span id="subtotal" class="font-semibold">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-sm">
+                                    <span class="text-gray-600">Tax (10%):</span>
+                                    <span id="tax" class="font-semibold">$0.00</span>
+                                </div>
+                                <div class="flex justify-between text-lg font-bold border-t pt-3">
+                                    <span>Total:</span>
+                                    <span id="total" class="text-primary">$0.00</span>
+                                </div>
+                                
+                                <div class="space-y-3">
+                                    <label class="block text-sm font-medium text-gray-700">Payment Method</label>
+                                    <select id="paymentMethod" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-primary focus:border-transparent">
+                                        <option value="cash">Cash</option>
+                                        <option value="card">Credit/Debit Card</option>
+                                        <option value="transfer">Bank Transfer</option>
+                                        <option value="wallet">Digital Wallet</option>
+                                    </select>
+                                </div>
+                                
+                                <button id="checkoutBtn" class="w-full bg-accent text-white py-3 rounded-xl hover:bg-green-600 transition-colors font-semibold text-lg shadow-lg">
+                                    <i class="fas fa-check mr-2"></i>Complete Sale
+                                </button>
+                                <button id="clearCartBtn" class="w-full bg-gray-200 text-gray-700 py-2 rounded-xl hover:bg-gray-300 transition-colors font-medium">
+                                    <i class="fas fa-trash mr-2"></i>Clear Cart
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Other sections will be added here -->
+        </main>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <script>
+        // Enhanced Application State
+        let currentUser = null;
+        let currentSection = 'dashboard';
+        let cart = [];
+        let products = [
+            {
+                id: 1,
+                name: 'Wireless Headphones',
+                sku: 'WH001',
+                category: 'electronics',
+                price: 99.99,
+                stock: 25,
+                minStock: 5,
+                barcode: '1234567890123',
+                image: '🎧'
+            },
+            {
+                id: 2,
+                name: 'Smartphone Case',
+                sku: 'SC001',
+                category: 'accessories',
+                price: 19.99,
+                stock: 50,
+                minStock: 10,
+                barcode: '1234567890124',
+                image: '📱'
+            },
+            {
+                id: 3,
+                name: 'Laptop Stand',
+                sku: 'LS001',
+                category: 'electronics',
+                price: 49.99,
+                stock: 15,
+                minStock: 3,
+                barcode: '1234567890125',
+                image: '💻'
+            },
+            {
+                id: 4,
+                name: 'USB Cable',
+                sku: 'UC001',
+                category: 'accessories',
+                price: 12.99,
+                stock: 100,
+                minStock: 20,
+                barcode: '1234567890126',
+                image: '🔌'
+            },
+            {
+                id: 5,
+                name: 'Gaming Mouse',
+                sku: 'GM001',
+                category: 'electronics',
+                price: 79.99,
+                stock: 3,
+                minStock: 10,
+                barcode: '1234567890127',
+                image: '🖱️'
+            },
+            {
+                id: 6,
+                name: 'Keyboard',
+                sku: 'KB001',
+                category: 'electronics',
+                price: 89.99,
+                stock: 7,
+                minStock: 15,
+                barcode: '1234567890128',
+                image: '⌨️'
+            }
+        ];
+
+        // Initialize App
+        document.addEventListener('DOMContentLoaded', function() {
+            initializeApp();
+        });
+
+        function initializeApp() {
+            setupEventListeners();
+            loadProducts();
+            updateCart();
+            initializeCharts();
+        }
+
+        function setupEventListeners() {
+            // Login
+            document.getElementById('loginForm').addEventListener('submit', handleLogin);
+            
+            // Logout
+            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
+            
+            // Sidebar toggle
+            document.getElementById('sidebarToggle').addEventListener('click', toggleSidebar);
+            
+            // Navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.addEventListener('click', (e) => {
+                    const section = e.currentTarget.dataset.section;
+                    showSection(section);
+                });
+            });
+
+            // POS functionality
+            document.getElementById('searchProducts').addEventListener('input', filterProducts);
+            document.getElementById('barcodeInput').addEventListener('keypress', handleBarcodeScan);
+            document.getElementById('checkoutBtn').addEventListener('click', handleCheckout);
+            document.getElementById('clearCartBtn').addEventListener('click', clearCart);
+        }
+
+        function handleLogin(e) {
+            e.preventDefault();
+            const username = document.getElementById('loginUsername').value;
+            const password = document.getElementById('loginPassword').value;
+            
+            // Simple authentication (in real app, this would be API call)
+            if (username === 'admin' && password === 'admin123') {
+                currentUser = { name: 'John Admin', role: 'Admin' };
+            } else if (username === 'manager' && password === 'manager123') {
+                currentUser = { name: 'Sarah Manager', role: 'Manager' };
+            } else if (username === 'cashier' && password === 'cashier123') {
+                currentUser = { name: 'Mike Cashier', role: 'Cashier' };
+            } else {
+                showNotification('Invalid credentials', 'error');
+                return;
+            }
+            
+            document.getElementById('currentUser').textContent = currentUser.name;
+            document.getElementById('loginScreen').classList.add('hidden');
+            document.getElementById('mainApp').classList.remove('hidden');
+            showSection('dashboard');
+            showNotification(`Welcome back, ${currentUser.name}!`, 'success');
+        }
+
+        function handleLogout() {
+            currentUser = null;
+            document.getElementById('mainApp').classList.add('hidden');
+            document.getElementById('loginScreen').classList.remove('hidden');
+            document.getElementById('loginUsername').value = '';
+            document.getElementById('loginPassword').value = '';
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('mainContent');
+            
+            if (sidebar.classList.contains('-translate-x-full')) {
+                sidebar.classList.remove('-translate-x-full');
+                mainContent.classList.remove('ml-0');
+                mainContent.classList.add('ml-64');
+            } else {
+                sidebar.classList.add('-translate-x-full');
+                mainContent.classList.add('ml-0');
+                mainContent.classList.remove('ml-64');
+            }
+        }
+
+        function showSection(sectionName) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            const targetSection = document.getElementById(sectionName + 'Section');
+            if (targetSection) {
+                targetSection.classList.remove('hidden');
+                targetSection.classList.add('fade-in');
+            }
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => {
+                item.classList.remove('bg-gray-800');
+            });
+            document.querySelector(`[data-section="${sectionName}"]`).classList.add('bg-gray-800');
+            
+            currentSection = sectionName;
+        }
+
+        function loadProducts() {
+            const productGrid = document.getElementById('productGrid');
+            if (!productGrid) return;
+            
+            productGrid.innerHTML = '';
+            
+            products.forEach(product => {
+                const productCard = document.createElement('div');
+                productCard.className = 'bg-gray-50 p-4 rounded-xl border cursor-pointer hover:bg-gray-100 transition-all duration-200 card-hover';
+                productCard.innerHTML = `
+                    <div class="text-center mb-3">
+                        <div class="text-3xl mb-2">${product.image}</div>
+                        <h4 class="font-semibold text-sm mb-1">${product.name}</h4>
+                        <p class="text-gray-600 text-xs mb-2">${product.sku}</p>
+                        <p class="font-bold text-green-600 text-lg">$${product.price.toFixed(2)}</p>
+                        <p class="text-xs text-gray-500">Stock: ${product.stock}</p>
+                    </div>
+                `;
+                productCard.addEventListener('click', () => addToCart(product));
+                productGrid.appendChild(productCard);
+            });
+        }
+
+        function filterProducts() {
+            const searchTerm = document.getElementById('searchProducts').value.toLowerCase();
+            const productCards = document.querySelectorAll('#productGrid > div');
+            
+            productCards.forEach(card => {
+                const productName = card.querySelector('h4').textContent.toLowerCase();
+                const productSKU = card.querySelector('p').textContent.toLowerCase();
+                
+                if (productName.includes(searchTerm) || productSKU.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        }
+
+        function handleBarcodeScan(e) {
+            if (e.key === 'Enter') {
+                const barcode = e.target.value.trim();
+                const product = products.find(p => p.barcode === barcode);
+                
+                if (product) {
+                    addToCart(product);
+                    e.target.value = '';
+                    showNotification(`Added ${product.name} to cart`, 'success');
+                } else {
+                    showNotification('Product not found', 'error');
+                    e.target.value = '';
+                }
+            }
+        }
+
+        function addToCart(product) {
+            if (product.stock <= 0) {
+                showNotification('Product out of stock', 'error');
+                return;
+            }
+            
+            const existingItem = cart.find(item => item.id === product.id);
+            
+            if (existingItem) {
+                if (existingItem.quantity < product.stock) {
+                    existingItem.quantity++;
+                } else {
+                    showNotification('Not enough stock available', 'error');
+                    return;
+                }
+            } else {
+                cart.push({
+                    id: product.id,
+                    name: product.name,
+                    price: product.price,
+                    quantity: 1
+                });
+            }
+            
+            updateCart();
+            showNotification(`Added ${product.name} to cart`, 'success');
+        }
+
+        function updateCart() {
+            const cartItems = document.getElementById('cartItems');
+            if (!cartItems) return;
+            
+            cartItems.innerHTML = '';
+            
+            let subtotal = 0;
+            
+            cart.forEach((item, index) => {
+                const cartItem = document.createElement('div');
+                cartItem.className = 'flex items-center justify-between p-3 bg-gray-50 rounded-lg';
+                cartItem.innerHTML = `
+                    <div class="flex-1">
+                        <p class="font-medium text-sm">${item.name}</p>
+                        <p class="text-xs text-gray-600">$${item.price.toFixed(2)} x ${item.quantity}</p>
+                    </div>
+                    <div class="flex items-center space-x-2">
+                        <button onclick="updateCartItemQuantity(${index}, -1)" class="bg-red-500 text-white w-6 h-6 rounded text-xs hover:bg-red-600 transition-colors">-</button>
+                        <span class="text-sm font-medium">${item.quantity}</span>
+                        <button onclick="updateCartItemQuantity(${index}, 1)" class="bg-green-500 text-white w-6 h-6 rounded text-xs hover:bg-green-600 transition-colors">+</button>
+                        <button onclick="removeFromCart(${index})" class="bg-red-600 text-white w-6 h-6 rounded text-xs hover:bg-red-700 transition-colors">×</button>
+                    </div>
+                `;
+                cartItems.appendChild(cartItem);
+                
+                subtotal += item.price * item.quantity;
+            });
+            
+            const tax = subtotal * 0.1;
+            const total = subtotal + tax;
+            
+            document.getElementById('subtotal').textContent = `$${subtotal.toFixed(2)}`;
+            document.getElementById('tax').textContent = `$${tax.toFixed(2)}`;
+            document.getElementById('total').textContent = `$${total.toFixed(2)}`;
+        }
+
+        function updateCartItemQuantity(index, change) {
+            const item = cart[index];
+            const product = products.find(p => p.id === item.id);
+            
+            const newQuantity = item.quantity + change;
+            
+            if (newQuantity <= 0) {
+                removeFromCart(index);
+                return;
+            }
+            
+            if (newQuantity > product.stock) {
+                showNotification('Not enough stock available', 'error');
+                return;
+            }
+            
+            item.quantity = newQuantity;
+            updateCart();
+        }
+
+        function removeFromCart(index) {
+            cart.splice(index, 1);
+            updateCart();
+        }
+
+        function clearCart() {
+            cart = [];
+            updateCart();
+            showNotification('Cart cleared', 'success');
+        }
+
+        function handleCheckout() {
+            if (cart.length === 0) {
+                showNotification('Cart is empty', 'error');
+                return;
+            }
+            
+            showNotification('Sale completed successfully!', 'success');
+            clearCart();
+        }
+
+        function initializeCharts() {
+            const ctx = document.getElementById('salesChart');
+            if (!ctx) return;
+            
+            new Chart(ctx, {
+                type: 'line',
+                data: {
+                    labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+                    datasets: [{
+                        label: 'Sales',
+                        data: [12000, 19000, 15000, 25000, 22000, 30000, 28000],
+                        borderColor: '#1E40AF',
+                        backgroundColor: 'rgba(30, 64, 175, 0.1)',
+                        tension: 0.4,
+                        fill: true
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    plugins: {
+                        legend: {
+                            display: false
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                callback: function(value) {
+                                    return '$' + value.toLocaleString();
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification bg-white p-4 rounded-xl shadow-lg border-l-4 ${
+                type === 'success' ? 'border-green-500' : 
+                type === 'error' ? 'border-red-500' : 'border-blue-500'
+            } max-w-sm`;
+            notification.innerHTML = `
+                <div class="flex items-center space-x-3">
+                    <i class="fas ${type === 'success' ? 'fa-check-circle text-green-500' : 
+                                     type === 'error' ? 'fa-exclamation-circle text-red-500' : 
+                                     'fa-info-circle text-blue-500'}"></i>
+                    <p class="text-sm font-medium text-gray-800">${message}</p>
+                </div>
+            `;
+            
+            document.getElementById('notifications').appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 4000);
+        }
+
+        // Global functions for cart operations
+        window.updateCartItemQuantity = updateCartItemQuantity;
+        window.removeFromCart = removeFromCart;
+    </script>
+</body>
+</html>

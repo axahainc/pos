@@ -1,0 +1,530 @@
+<!-- Enhanced UI Components for Enterprise POS Pro -->
+<!-- These components can be integrated into the main POS system -->
+
+<!-- Customer Management Modal -->
+<div id="customerModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">Customer Management</h3>
+                <button id="closeCustomerModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <!-- Customer Search/Add Tabs -->
+            <div class="mb-6">
+                <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                    <button class="customer-tab px-4 py-2 rounded-md bg-white text-gray-700 font-medium shadow-sm" data-tab="search">Search Customers</button>
+                    <button class="customer-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="add">Add New Customer</button>
+                </div>
+            </div>
+
+            <!-- Search Customers Tab -->
+            <div id="customerSearchTab" class="customer-tab-content">
+                <div class="mb-4">
+                    <div class="relative">
+                        <i class="fas fa-search absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                        <input type="text" id="customerSearchInput" placeholder="Search by name, phone, or email..." class="w-full pl-10 pr-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                    </div>
+                </div>
+                
+                <div id="customerSearchResults" class="space-y-3">
+                    <!-- Search results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Add Customer Tab -->
+            <div id="customerAddTab" class="customer-tab-content hidden">
+                <form id="addCustomerForm" class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">First Name</label>
+                            <input type="text" id="customerFirstName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Last Name</label>
+                            <input type="text" id="customerLastName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" required>
+                        </div>
+                    </div>
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                            <input type="tel" id="customerPhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" required>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                            <input type="email" id="customerEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700 mb-1">Address</label>
+                        <textarea id="customerAddress" rows="3" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent"></textarea>
+                    </div>
+                    
+                    <div class="flex justify-end space-x-3">
+                        <button type="button" id="cancelAddCustomer" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                        <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Add Customer</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Inventory Modal -->
+<div id="inventoryModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">Advanced Inventory Management</h3>
+                <button id="closeInventoryModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <!-- Inventory Tabs -->
+            <div class="mb-6">
+                <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                    <button class="inventory-tab px-4 py-2 rounded-md bg-white text-gray-700 font-medium shadow-sm" data-tab="stock">Stock Movements</button>
+                    <button class="inventory-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="purchase">Purchase Orders</button>
+                    <button class="inventory-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="suppliers">Suppliers</button>
+                    <button class="inventory-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="reorder">Reorder Points</button>
+                </div>
+            </div>
+
+            <!-- Stock Movements Tab -->
+            <div id="stockMovementsTab" class="inventory-tab-content">
+                <div class="mb-4 flex justify-between items-center">
+                    <h4 class="text-lg font-medium">Stock Movement History</h4>
+                    <button id="addStockMovementBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        <i class="fas fa-plus mr-2"></i>Add Movement
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Date</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Product</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Type</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Quantity</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Reason</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">User</th>
+                            </tr>
+                        </thead>
+                        <tbody id="stockMovementsTable">
+                            <!-- Stock movements will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Purchase Orders Tab -->
+            <div id="purchaseOrdersTab" class="inventory-tab-content hidden">
+                <div class="mb-4 flex justify-between items-center">
+                    <h4 class="text-lg font-medium">Purchase Orders</h4>
+                    <button id="createPurchaseOrderBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                        <i class="fas fa-plus mr-2"></i>Create PO
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">PO Number</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Supplier</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Total Amount</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Expected Delivery</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="purchaseOrdersTable">
+                            <!-- Purchase orders will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Suppliers Tab -->
+            <div id="suppliersTab" class="inventory-tab-content hidden">
+                <div class="mb-4 flex justify-between items-center">
+                    <h4 class="text-lg font-medium">Suppliers</h4>
+                    <button id="addSupplierBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                        <i class="fas fa-plus mr-2"></i>Add Supplier
+                    </button>
+                </div>
+                
+                <div class="overflow-x-auto">
+                    <table class="w-full">
+                        <thead class="bg-gray-50">
+                            <tr>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Name</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Contact</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Phone</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Email</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Status</th>
+                                <th class="px-4 py-3 text-left text-sm font-medium text-gray-700">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="suppliersTable">
+                            <!-- Suppliers will be populated here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Reorder Points Tab -->
+            <div id="reorderPointsTab" class="inventory-tab-content hidden">
+                <div class="mb-4">
+                    <h4 class="text-lg font-medium mb-4">Reorder Point Management</h4>
+                    <p class="text-sm text-gray-600">Set minimum stock levels to automatically generate reorder suggestions</p>
+                </div>
+                
+                <div id="reorderSuggestions" class="space-y-4">
+                    <!-- Reorder suggestions will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Advanced Reporting Modal -->
+<div id="reportingModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-5xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">Advanced Reporting & Analytics</h3>
+                <button id="closeReportingModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <!-- Reporting Tabs -->
+            <div class="mb-6">
+                <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                    <button class="reporting-tab px-4 py-2 rounded-md bg-white text-gray-700 font-medium shadow-sm" data-tab="sales">Sales Reports</button>
+                    <button class="reporting-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="inventory">Inventory Reports</button>
+                    <button class="reporting-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="customers">Customer Reports</button>
+                    <button class="reporting-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="analytics">Analytics</button>
+                </div>
+            </div>
+
+            <!-- Sales Reports Tab -->
+            <div id="salesReportsTab" class="reporting-tab-content">
+                <div class="mb-6">
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Start Date</label>
+                            <input type="date" id="salesStartDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">End Date</label>
+                            <input type="date" id="salesEndDate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-1">Group By</label>
+                            <select id="salesGroupBy" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                <option value="day">Day</option>
+                                <option value="week">Week</option>
+                                <option value="month">Month</option>
+                            </select>
+                        </div>
+                    </div>
+                    
+                    <div class="flex space-x-3">
+                        <button id="generateSalesReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-chart-line mr-2"></i>Generate Report
+                        </button>
+                        <button id="exportSalesCSVBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-download mr-2"></i>Export CSV
+                        </button>
+                        <button id="exportSalesPDFBtn" class="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
+                            <i class="fas fa-file-pdf mr-2"></i>Export PDF
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="salesReportResults" class="space-y-6">
+                    <!-- Sales report results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Inventory Reports Tab -->
+            <div id="inventoryReportsTab" class="reporting-tab-content hidden">
+                <div class="mb-6">
+                    <div class="flex space-x-3">
+                        <button id="generateInventoryReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-boxes mr-2"></i>Generate Inventory Report
+                        </button>
+                        <button id="exportInventoryCSVBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-download mr-2"></i>Export CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="inventoryReportResults" class="space-y-6">
+                    <!-- Inventory report results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Customer Reports Tab -->
+            <div id="customerReportsTab" class="reporting-tab-content hidden">
+                <div class="mb-6">
+                    <div class="flex space-x-3">
+                        <button id="generateCustomerReportBtn" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">
+                            <i class="fas fa-users mr-2"></i>Generate Customer Report
+                        </button>
+                        <button id="exportCustomerCSVBtn" class="px-4 py-2 bg-green-600 text-white rounded-lg hover:bg-green-700">
+                            <i class="fas fa-download mr-2"></i>Export CSV
+                        </button>
+                    </div>
+                </div>
+                
+                <div id="customerReportResults" class="space-y-6">
+                    <!-- Customer report results will be populated here -->
+                </div>
+            </div>
+
+            <!-- Analytics Tab -->
+            <div id="analyticsTab" class="reporting-tab-content hidden">
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <h4 class="text-lg font-medium mb-4">Sales Trends</h4>
+                        <canvas id="salesTrendChart" width="400" height="200"></canvas>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <h4 class="text-lg font-medium mb-4">Top Products</h4>
+                        <div id="topProductsChart">
+                            <!-- Top products chart will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <h4 class="text-lg font-medium mb-4">Customer Segmentation</h4>
+                        <div id="customerSegmentationChart">
+                            <!-- Customer segmentation chart will be populated here -->
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-50 p-6 rounded-xl">
+                        <h4 class="text-lg font-medium mb-4">Inventory Value</h4>
+                        <div id="inventoryValueChart">
+                            <!-- Inventory value chart will be populated here -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Receipt Modal with Advanced Features -->
+<div id="advancedReceiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-2xl">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">Sale Complete - Receipt</h3>
+                <button id="closeAdvancedReceiptModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <div class="text-center mb-6">
+                <div class="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-green-600 text-2xl"></i>
+                </div>
+                <h4 class="text-lg font-semibold text-gray-800">Transaction Successful!</h4>
+                <p class="text-gray-600">Receipt #<span id="advancedReceiptNumber"></span></p>
+            </div>
+            
+            <div id="advancedReceiptContent" class="border rounded-lg p-4 mb-6 font-mono text-sm bg-gray-50">
+                <!-- Advanced receipt content will be generated here -->
+            </div>
+            
+            <div class="grid grid-cols-2 gap-3">
+                <button id="printAdvancedReceipt" class="bg-blue-600 text-white py-3 rounded-lg hover:bg-blue-700 transition-colors">
+                    <i class="fas fa-print mr-2"></i>Print Receipt
+                </button>
+                <button id="emailAdvancedReceipt" class="bg-green-600 text-white py-3 rounded-lg hover:bg-green-700 transition-colors">
+                    <i class="fas fa-envelope mr-2"></i>Email Receipt
+                </button>
+                <button id="smsAdvancedReceipt" class="bg-purple-600 text-white py-3 rounded-lg hover:bg-purple-700 transition-colors">
+                    <i class="fas fa-sms mr-2"></i>SMS Receipt
+                </button>
+                <button id="closeAdvancedReceipt" class="bg-gray-600 text-white py-3 rounded-lg hover:bg-gray-700 transition-colors">
+                    <i class="fas fa-times mr-2"></i>Close
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Settings Modal -->
+<div id="settingsModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto">
+        <div class="p-6 border-b border-gray-200">
+            <div class="flex items-center justify-between">
+                <h3 class="text-xl font-semibold text-gray-800">System Settings</h3>
+                <button id="closeSettingsModal" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+        </div>
+        
+        <div class="p-6">
+            <!-- Settings Tabs -->
+            <div class="mb-6">
+                <div class="flex space-x-1 bg-gray-100 p-1 rounded-lg">
+                    <button class="settings-tab px-4 py-2 rounded-md bg-white text-gray-700 font-medium shadow-sm" data-tab="general">General</button>
+                    <button class="settings-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="tax">Tax & Pricing</button>
+                    <button class="settings-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="receipts">Receipts</button>
+                    <button class="settings-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="users">Users & Permissions</button>
+                    <button class="settings-tab px-4 py-2 rounded-md text-gray-600 font-medium" data-tab="backup">Backup & Export</button>
+                </div>
+            </div>
+
+            <!-- General Settings Tab -->
+            <div id="generalSettingsTab" class="settings-tab-content">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">Store Information</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Store Name</label>
+                                <input type="text" id="storeName" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="Enterprise POS Pro">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Store Address</label>
+                                <input type="text" id="storeAddress" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="123 Business St, City, State">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Phone</label>
+                                <input type="tel" id="storePhone" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="(555) 123-4567">
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Email</label>
+                                <input type="email" id="storeEmail" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="info@enterprise.com">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">System Preferences</h4>
+                        <div class="space-y-3">
+                            <div class="flex items-center">
+                                <input type="checkbox" id="enableNotifications" class="mr-3" checked>
+                                <label for="enableNotifications" class="text-sm font-medium text-gray-700">Enable System Notifications</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="autoBackup" class="mr-3" checked>
+                                <label for="autoBackup" class="text-sm font-medium text-gray-700">Enable Automatic Backup</label>
+                            </div>
+                            <div class="flex items-center">
+                                <input type="checkbox" id="lowStockAlerts" class="mr-3" checked>
+                                <label for="lowStockAlerts" class="text-sm font-medium text-gray-700">Enable Low Stock Alerts</label>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tax & Pricing Tab -->
+            <div id="taxSettingsTab" class="settings-tab-content hidden">
+                <div class="space-y-6">
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">Tax Configuration</h4>
+                        <div class="space-y-4">
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Default Tax Rate (%)</label>
+                                    <input type="number" id="defaultTaxRate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="10" step="0.01">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-1">Food Tax Rate (%)</label>
+                                    <input type="number" id="foodTaxRate" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent" value="5" step="0.01">
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <h4 class="text-lg font-medium mb-4">Currency Settings</h4>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Currency</label>
+                                <select id="currency" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <option value="USD" selected>USD ($)</option>
+                                    <option value="EUR">EUR (€)</option>
+                                    <option value="GBP">GBP (£)</option>
+                                    <option value="CAD">CAD (C$)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-1">Decimal Places</label>
+                                <select id="decimalPlaces" class="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-600 focus:border-transparent">
+                                    <option value="2" selected>2</option>
+                                    <option value="0">0</option>
+                                    <option value="3">3</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Save Settings Button -->
+            <div class="mt-8 pt-6 border-t border-gray-200">
+                <div class="flex justify-end space-x-3">
+                    <button id="cancelSettings" class="px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                    <button id="saveSettings" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700">Save Settings</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Notification System -->
+<div id="notificationCenter" class="fixed top-4 right-4 z-50 space-y-2 max-w-sm">
+    <!-- Notifications will be dynamically added here -->
+</div>
+
+<!-- Loading Overlay -->
+<div id="loadingOverlay" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl p-8 text-center">
+        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+        <p class="text-gray-700 font-medium">Processing...</p>
+    </div>
+</div>
+
+<!-- Confirmation Dialog -->
+<div id="confirmationDialog" class="hidden fixed inset-0 bg-black bg-opacity-50 z-50 flex items-center justify-center">
+    <div class="bg-white rounded-2xl p-6 max-w-md mx-4">
+        <div class="text-center">
+            <div class="w-12 h-12 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-4">
+                <i class="fas fa-exclamation-triangle text-red-600 text-xl"></i>
+            </div>
+            <h3 class="text-lg font-semibold text-gray-800 mb-2" id="confirmationTitle">Confirm Action</h3>
+            <p class="text-gray-600 mb-6" id="confirmationMessage">Are you sure you want to proceed with this action?</p>
+            
+            <div class="flex space-x-3">
+                <button id="confirmCancel" class="flex-1 px-4 py-2 text-gray-600 border border-gray-300 rounded-lg hover:bg-gray-50">Cancel</button>
+                <button id="confirmProceed" class="flex-1 px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">Proceed</button>
+            </div>
+        </div>
+    </div>
+</div>
