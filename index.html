@@ -1189,4 +1189,313 @@
                                 <span class="font-medium">Wireless Headphones</span>
                                 <span class="text-sm text-gray-600">245 sold</span>
                             </div>
-                            <div class="flex items-center justify-
+                          
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <span class="font-medium">Laptop Stand</span>
+                                <span class="text-sm text-gray-600">167 sold</span>
+                            </div>
+                            <div class="flex items-center justify-between p-3 bg-gray-50 rounded">
+                                <span class="font-medium">USB Cable</span>
+                                <span class="text-sm text-gray-600">134 sold</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="mt-6 bg-white rounded-lg shadow p-6">
+                    <h3 class="text-lg font-bold mb-4">Sales Analytics</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div class="bg-blue-50 p-4 rounded-lg">
+                            <p class="text-sm text-blue-600">Today's Revenue</p>
+                            <p class="text-xl font-bold">$7,460.00</p>
+                        </div>
+                        <div class="bg-green-50 p-4 rounded-lg">
+                            <p class="text-sm text-green-600">Transactions</p>
+                            <p class="text-xl font-bold">124</p>
+                        </div>
+                        <div class="bg-purple-50 p-4 rounded-lg">
+                            <p class="text-sm text-purple-600">Average Sale</p>
+                            <p class="text-xl font-bold">$60.16</p>
+                        </div>
+                    </div>
+                    
+                    <h3 class="text-lg font-bold mb-4">Recent Transactions</h3>
+                    <div class="overflow-x-auto">
+                        <table class="w-full">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-3 text-left">Transaction ID</th>
+                                    <th class="px-4 py-3 text-left">Time</th>
+                                    <th class="px-4 py-3 text-left">Amount</th>
+                                    <th class="px-4 py-3 text-left">Payment Method</th>
+                                    <th class="px-4 py-3 text-left">Cashier</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr>
+                                    <td class="px-4 py-3">#TRX-001245</td>
+                                    <td class="px-4 py-3">10:30 AM</td>
+                                    <td class="px-4 py-3">$125.50</td>
+                                    <td class="px-4 py-3">Credit Card</td>
+                                    <td class="px-4 py-3">Mike Cashier</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">#TRX-001244</td>
+                                    <td class="px-4 py-3">10:25 AM</td>
+                                    <td class="px-4 py-3">$89.99</td>
+                                    <td class="px-4 py-3">Cash</td>
+                                    <td class="px-4 py-3">Sarah Manager</td>
+                                </tr>
+                                <tr>
+                                    <td class="px-4 py-3">#TRX-001243</td>
+                                    <td class="px-4 py-3">10:18 AM</td>
+                                    <td class="px-4 py-3">$210.25</td>
+                                    <td class="px-4 py-3">Digital Wallet</td>
+                                    <td class="px-4 py-3">John Admin</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Notifications -->
+    <div id="notifications" class="fixed top-4 right-4 z-50 space-y-2"></div>
+
+    <!-- Modals -->
+    <!-- Add Product Modal -->
+    <div id="addProductModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold mb-4">Add New Product</h3>
+            <form id="addProductForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Product Name</label>
+                    <input type="text" id="productName" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">SKU</label>
+                    <input type="text" id="productSKU" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Category</label>
+                    <select id="productCategory" class="w-full px-3 py-2 border rounded-md" required>
+                        <option value="">Select Category</option>
+                        <option value="electronics">Electronics</option>
+                        <option value="accessories">Accessories</option>
+                        <option value="clothing">Clothing</option>
+                        <option value="books">Books</option>
+                        <option value="home">Home & Garden</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Price</label>
+                    <input type="number" id="productPrice" step="0.01" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Stock Quantity</label>
+                    <input type="number" id="productStock" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Minimum Stock</label>
+                    <input type="number" id="productMinStock" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="cancelAddProduct" class="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Add Product
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Staff Modal -->
+    <div id="addStaffModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <h3 class="text-lg font-bold mb-4">Add Staff Member</h3>
+            <form id="addStaffForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-1">Full Name</label>
+                    <input type="text" id="staffName" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Username</label>
+                    <input type="text" id="staffUsername" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Password</label>
+                    <input type="password" id="staffPassword" class="w-full px-3 py-2 border rounded-md" required>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Role</label>
+                    <select id="staffRole" class="w-full px-3 py-2 border rounded-md" required>
+                        <option value="">Select Role</option>
+                        <option value="admin">Admin</option>
+                        <option value="manager">Manager</option>
+                        <option value="cashier">Cashier</option>
+                    </select>
+                </div>
+                <div>
+                    <label class="block text-sm font-medium mb-1">Branch</label>
+                    <select id="staffBranch" class="w-full px-3 py-2 border rounded-md" required>
+                        <option value="main">Main Branch</option>
+                        <option value="downtown">Downtown Branch</option>
+                        <option value="mall">Mall Branch</option>
+                    </select>
+                </div>
+                <div class="flex justify-end space-x-2">
+                    <button type="button" id="cancelAddStaff" class="px-4 py-2 text-gray-600 border rounded-md hover:bg-gray-50">
+                        Cancel
+                    </button>
+                    <button type="submit" class="px-4 py-2 bg-blue-600 text-white rounded-md hover:bg-blue-700">
+                        Add Staff
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Receipt Modal -->
+    <div id="receiptModal" class="hidden fixed inset-0 bg-black bg-opacity-50 z-40 flex items-center justify-center">
+        <div class="bg-white rounded-lg shadow-xl w-full max-w-md p-6">
+            <div class="text-center mb-4">
+                <h3 class="text-lg font-bold">Sale Complete!</h3>
+                <p class="text-gray-600">Receipt #<span id="receiptNumber"></span></p>
+            </div>
+            <div id="receiptContent" class="border rounded p-4 mb-4 font-mono text-sm">
+                <!-- Receipt content will be generated here -->
+            </div>
+            <div class="flex justify-between space-x-2">
+                <button id="printReceipt" class="flex-1 bg-blue-600 text-white py-2 rounded hover:bg-blue-700">
+                    Print Receipt
+                </button>
+                <button id="emailReceipt" class="flex-1 bg-green-600 text-white py-2 rounded hover:bg-green-700">
+                    Email Receipt
+                </button>
+                <button id="closeReceipt" class="flex-1 bg-gray-600 text-white py-2 rounded hover:bg-gray-700">
+                    Close
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- File input for CSV import (hidden) -->
+    <input type="file" id="csvFileInput" accept=".csv" class="hidden">
+
+    <script>
+        // ... (previous JavaScript code remains the same) ...
+
+        // Add Staff functionality
+        document.getElementById('addStaffBtn').addEventListener('click', showAddStaffModal);
+        document.getElementById('cancelAddStaff').addEventListener('click', hideAddStaffModal);
+        document.getElementById('addStaffForm').addEventListener('submit', handleAddStaff);
+
+        function showAddStaffModal() {
+            document.getElementById('addStaffModal').classList.remove('hidden');
+        }
+
+        function hideAddStaffModal() {
+            document.getElementById('addStaffModal').classList.add('hidden');
+            document.getElementById('addStaffForm').reset();
+        }
+
+        function handleAddStaff(e) {
+            e.preventDefault();
+            
+            const newStaff = {
+                id: Date.now(),
+                name: document.getElementById('staffName').value,
+                username: document.getElementById('staffUsername').value,
+                password: document.getElementById('staffPassword').value,
+                role: document.getElementById('staffRole').value,
+                branch: document.getElementById('staffBranch').value
+            };
+            
+            staff.push(newStaff);
+            hideAddStaffModal();
+            showNotification('Staff member added successfully!', 'success');
+        }
+
+        function checkLowStock() {
+            const lowStockItems = products.filter(product => product.stock <= product.minStock);
+            const lowStockTable = document.getElementById('lowStockTable');
+            
+            lowStockTable.innerHTML = '';
+            
+            lowStockItems.forEach(product => {
+                const status = product.stock === 0 ? 
+                    '<span class="bg-red-100 text-red-800 px-2 py-1 rounded-full text-sm">Out of Stock</span>' :
+                    '<span class="bg-yellow-100 text-yellow-800 px-2 py-1 rounded-full text-sm">Low Stock</span>';
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td class="px-4 py-3">${product.name}</td>
+                    <td class="px-4 py-3">${product.stock}</td>
+                    <td class="px-4 py-3">${product.minStock}</td>
+                    <td class="px-4 py-3">${status}</td>
+                    <td class="px-4 py-3"><button class="bg-blue-600 text-white px-3 py-1 rounded text-sm">Reorder</button></td>
+                `;
+                lowStockTable.appendChild(row);
+            });
+        }
+
+        function exportProducts() {
+            // Convert products to CSV
+            const headers = ['ID', 'Name', 'SKU', 'Category', 'Price', 'Stock', 'Min Stock', 'Barcode'];
+            const csvData = [
+                headers.join(','),
+                ...products.map(p => 
+                    [p.id, p.name, p.sku, p.category, p.price, p.stock, p.minStock, p.barcode].join(',')
+                )
+            ].join('\n');
+            
+            // Create download link
+            const blob = new Blob([csvData], { type: 'text/csv' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'products_export.csv';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            
+            showNotification('Products exported successfully!', 'success');
+        }
+
+        function exportSalesReportPDF() {
+            // In a real application, this would generate a PDF report
+            showNotification('PDF report generated successfully!', 'success');
+        }
+
+        function exportSalesReportExcel() {
+            // In a real application, this would generate an Excel report
+            showNotification('Excel report generated successfully!', 'success');
+        }
+
+        function showNotification(message, type) {
+            const notification = document.createElement('div');
+            notification.className = `notification bg-white p-4 rounded-lg shadow-lg border-l-4 ${
+                type === 'success' ? 'border-green-500' : 
+                type === 'error' ? 'border-red-500' : 'border-blue-500'
+            }`;
+            notification.innerHTML = `
+                <p class="text-sm font-medium">${message}</p>
+            `;
+            
+            document.getElementById('notifications').appendChild(notification);
+            
+            setTimeout(() => {
+                notification.remove();
+            }, 3000);
+        }
+
+        // Initialize the application
+        initializeApp();
+    </script>
+</body>
+</html>
